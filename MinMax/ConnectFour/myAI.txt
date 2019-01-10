@@ -1,0 +1,116 @@
+from connect_four import *
+
+def two_ai_game():
+    my_board = make_board()
+    while not game_is_over(my_board):
+      #The "X" player finds their best move.
+      result = minimax(my_board, True, 4, -float("Inf"), float("Inf"), my_evaluate_board)
+      print( "X Turn\nX selected ", result[1])
+      print(result[1])
+      select_space(my_board, result[1], "X")
+      print_board(my_board)
+
+      if not game_is_over(my_board):
+        #The "O" player finds their best move
+        result = minimax(my_board, False, 4, -float("Inf"), float("Inf"), codecademy_evaluate_board)
+        print( "O Turn\nO selected ", result[1])
+        print(result[1])
+        select_space(my_board, result[1], "O")
+        print_board(my_board)
+    if has_won(my_board, "X"):
+        print("X won!")
+    elif has_won(my_board, "O"):
+        print("O won!")
+    else:
+        print("It's a tie!")
+
+def random_eval(board):
+  return random.randint(-100, 100)
+  
+def my_evaluate_board(board):
+  if has_won(board, "X"):
+    return float("Inf")
+  if has_won(board, "O"):
+    return -float("Inf")
+  x_two_streak = 0
+  o_two_streak = 0
+  x_three_streak = 0
+  o_three_streak = 0
+  for col in range(len(board) - 1):
+    for row in range(len(board[0]) - 1):
+
+      #GOING RIGHT - HORIZONTALLY, UP, UP RIGHT
+      if board[col][row] == "X" and board[col + 1][row] == "X" and col + 3 in range(len(board) - 1) and board[col + 2][row] != "O" and board[col + 3][row] != "O":
+        x_two_streak += 1
+        if board[col + 2][row] == "X" and board[col + 3][row] != "O":
+          x_three_streak += 1
+
+      if board[col][row] == "O" and board[col + 1][row] == "O" and col + 3 in range(len(board) - 1) and board[col + 2][row] != "X" and board[col + 2][row] != "X":
+        o_two_streak += 1
+        if board[col + 2][row] == "O" and board[col + 3][row] != "X":
+          o_three_streak += 1
+
+      if board[col][row] == "X" and board[col][row + 1] == "X" and row + 3 in range(len(board[0])) and board[col][row + 2] != "O":
+        x_two_streak += 1
+        if board[col][row + 2] == "X" and board[col][row + 3] != "O":
+          x_three_streak += 1
+
+      if board[col][row] == "O" and board[col][row + 1] == "O" and row + 3 in range(len(board[0])) and board[col][row + 2] != "X":
+        o_two_streak += 1
+        if board[col][row + 2] == "O" and board[col][row + 3] != "X":
+          x_three_streak += 1
+
+      if board[col][row] == "X" and board[col + 1][row + 1] == "X" and col + 3 in range(len(board) - 1) and row + 3 in range(len(board[0])):
+        x_two_streak += 1
+        if board[col + 2][row + 2] == "X" and board[col + 3][row + 3] != "O":
+          x_three_streak += 1
+
+      if board[col][row] == "O" and board[col + 1][row + 1] == "O" and col + 3 in range(len(board) - 1) and row + 3 in range(len(board[0])):
+        o_two_streak += 1
+        if board[col + 2][row + 2] == "O" and board[col + 3][row + 3] != "X":
+          x_three_streak += 1
+
+      if board[col][row] == "X" and board[col + 1][row - 1] == "X" and col + 3 in range(len(board) - 1) and row - 3 in range(len(board[0])):
+        x_two_streak += 1
+        if board[col + 2][row - 2] == "X" and board[col + 3][row - 3] != "O":
+          x_three_streak += 1
+
+      if board[col][row] == "O" and board[col + 1][row - 1] == "O" and col + 3 in range(len(board) - 1) and row - 3 in range(len(board[0])):
+        o_two_streak += 1
+        if board[col + 2][row - 2] == "O" and board[col + 3][row - 3] != "X":
+          x_three_streak += 1
+
+      #GOING LEFT - HORIZONTALLY, UP LEFT
+      if board[col][row] == "X" and board[col - 1][row] == "X" and col - 3 in range(len(board) - 1) and board[col - 2][row] != "O" and board[col - 3][row] != "O":
+        x_two_streak += 1
+        if board[col - 2][row] == "X" and board[col - 3][row] != "O":
+          x_three_streak += 1
+
+      if board[col][row] == "O" and board[col - 1][row] == "O" and col - 3 in range(len(board) - 1) and board[col - 2][row] != "X" and board[col - 2][row] != "X":
+        o_two_streak += 1
+        if board[col - 2][row] == "O" and board[col - 3][row] != "X":
+          o_three_streak += 1
+
+      if board[col][row] == "X" and board[col - 1][row - 1] == "X" and col - 3 in range(len(board) - 1) and row - 3 in range(len(board[0])):
+        x_two_streak += 1
+        if board[col - 2][row - 2] == "X" and board[col - 3][row - 3] != "O":
+          x_three_streak += 1
+
+      if board[col][row] == "O" and board[col - 1][row - 1] == "O" and col - 3 in range(len(board) - 1) and row - 3 in range(len(board[0])):
+        o_two_streak += 1
+        if board[col - 2][row - 2] == "O" and board[col - 3][row - 3] != "X":
+          x_three_streak += 1
+
+      if board[col][row] == "X" and board[col - 1][row + 1] == "X" and col - 3 in range(len(board) - 1) and row + 3 in range(len(board[0])):
+        x_two_streak += 1
+        if board[col - 2][row + 2] == "X" and board[col - 3][row + 3] != "O":
+          x_three_streak += 1
+
+      if board[col][row] == "O" and board[col - 1][row + 1] == "O" and col - 3 in range(len(board) - 1) and row + 3 in range(len(board[0])):
+        o_two_streak += 1
+        if board[col - 2][row + 2] == "O" and board[col - 3][row + 3] != "X":
+          x_three_streak += 1
+
+  return (x_three_streak - o_three_streak) * 3 + x_two_streak - o_two_streak
+  
+two_ai_game()
